@@ -1,0 +1,316 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>vue</title>
+
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.0/css/bootstrap.min.css">
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.0/js/bootstrap.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/vue@2.6.10/dist/vue.js"></script>
+    <script src="https://unpkg.com/vue-router@3.0.6/dist/vue-router.js"></script>
+    <script src="https://unpkg.com/axios/dist/axios.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/vue-resource@1.5.1"></script>
+    <script src="https://cdn.jsdelivr.net/npm/apexcharts"></script>
+    <script src="https://cdn.jsdelivr.net/npm/vue-apexcharts"></script>
+    <script src="https://unpkg.com/vuejs-paginate@0.9.0"></script>
+    <script src="https://unpkg.com/bootstrap-vue@latest/dist/bootstrap-vue.js"></script>
+
+
+
+</head>
+<body>
+
+
+{% verbatim %}
+
+
+<div id="app" class="container">
+
+    <nav class="navbar navbar-default">
+        <div class="container-fluid">
+            <div class="navbar-header">
+                <a class="navbar-brand" href="#">Survaider</a>
+            </div>
+            <ul class="nav navbar-nav">
+                <li class="active">
+                    <router-link to="/"><a>Home</a></router-link>
+                </li>
+                <li class="active">
+                    <router-link to="/first">Entries</router-link>
+                </li>
+
+
+            </ul>
+        </div>
+    </nav>
+
+    <div class="container">
+
+        <router-view></router-view>
+    </div>
+
+</div>
+<template id="home">
+
+
+    <div class="container-fluid">
+
+        <div class="row">
+            <div class="col-md-6">
+                <div style="width:500px;height:500px;background-color:lightblue;">
+
+                    <apexchart type=pie width=380 :options="pie1.chartOptions" :series="pie1.series"/>
+                </div>
+            </div>
+
+
+            <div class="col-md-6">
+
+                <div style="width:500px;height:500px;background-color:lightblue;">
+
+                    <apexchart type=pie width=380 :options="pie2.chartOptions" :series="pie2.series"/>
+                </div>
+            </div>
+
+
+        </div>
+
+
+    </div>
+
+</template>
+
+<template id="firstroute">
+    <div class="container">
+        <label for="search">Search over Sex,Relationship or Race</label>
+        <input type="text" id='search'name="search" placeholder="Search..." v-model="search"><br>
+
+
+<!--bootstrap vue is used here to paginate the data-->
+        <b-pagination
+                v-model="currentPage"
+                :total-rows="rows"
+                :per-page="perPage"
+                first-text="⏮"
+                prev-text="⏪"
+                next-text="⏩"
+                last-text="⏭"
+                class="mt-4"
+        ></b-pagination>
+
+
+        <b-table
+                bordered stripped
+                show-empty
+                id="my-table"
+                :items="filter"
+                :per-page="perPage"
+                :current-page="currentPage"
+                small>
+
+        </b-table>
+    </div>
+
+
+</div>
+</template>
+
+
+
+{%endverbatim%}
+
+<script type="text/javascript">
+
+
+var conf={
+    malecount:0,
+    femalecount:0,
+    not_in_family:0,
+    husband:0,
+    wife:0,
+    own_child:0,
+    unmarried:0,
+    allentries:[],
+
+
+
+
+}
+
+
+firstcomponent=Vue.extend({
+    template:"#firstroute",
+    components:{
+        pagination: VuejsPaginate,
+
+
+    },
+    data(){
+        return{
+        allentries:conf.allentries,
+        entrychanged:false,
+        search:"",
+        page:0,
+        rows: 32000,
+        perPage: 10,
+        currentPage: 1,
+        items:conf.allentries
+        }
+    },
+    watch:{
+        allentries:function(){
+            console.log("allentrieshas changed");
+           this.entrychanged=true;
+            console.log(this.entrychanged)
+            }
+
+    },
+
+
+    computed: {
+      filter:function(){
+        return conf.allentries.filter((item) =>{
+          if(item.sex.match(this.search)){
+            return true;
+          }
+          else if(item.race.match(this.search)){
+            return true;
+          }
+          else if(item.relationship.match(this.search)){
+            return true;
+          }
+
+        })
+      },
+
+
+    }
+
+});
+
+
+homecomponent=Vue.extend({
+    template:"#home",
+    components: {
+        apexchart: VueApexCharts,
+      },
+    data(){
+        return{
+
+            x:2111,
+            y:700,
+            pie1:{
+            series: [conf.malecount,conf.femalecount],
+            chartOptions: {
+              labels: ['Male', 'Female',],
+              responsive: [{
+                breakpoint: 480,
+                options: {
+                  chart: {
+                    width: 200
+                  },
+                  legend: {
+                    position: 'bottom'
+                  }
+                }
+              }]
+            },
+
+
+            },
+            pie2:{
+            series: [0,0,0,0,0],
+            chartOptions: {
+              labels: ['not_in_family', 'husband','wife','own_child','unmarried'],
+              responsive: [{
+                breakpoint: 480,
+                options: {
+                  chart: {
+                    width: 200
+                  },
+                  legend: {
+                    position: 'bottom'
+                  }
+                }
+              }]
+            },
+
+
+            },
+
+
+        }
+
+    },
+    beforeCreate(){
+
+        this.$http.get('http://127.0.0.1:8000/app/malecount/')
+        .then((response)=>{
+        conf.malecount=JSON.parse(response.data['malecount']);
+        conf.femalecount=JSON.parse(response.data['femalecount']);
+
+        console.log(conf.malecount);
+         console.log(conf.femalecount);
+            this.pie1.series=[conf.malecount,conf.femalecount];
+
+        });
+
+         this.$http.get('http://127.0.0.1:8000/app/relationship/')
+        .then((response)=>{
+            console.log(response.data)
+         conf.not_in_family=JSON.parse(response.data['not_in_family'])
+         conf.husband=JSON.parse(response.data['husband'])
+         conf.wife=JSON.parse(response.data['wife'])
+         conf.own_child=JSON.parse(response.data['own_child'])
+         conf.unmarried=JSON.parse(response.data['unmarried'])
+         this.pie2.series=[conf.not_in_family,conf.husband,conf.wife,conf.own_child,conf.unmarried]
+        });
+
+        if(conf.allentries.length==0){
+            this.$http.get('http://127.0.0.1:8000/app/alldata/')
+            .then((response)=>{
+
+                conf.allentries=response.data
+
+                console.log(conf.allentries)
+
+            });
+        }
+
+
+
+
+
+
+    },
+});
+routes=[
+    {
+        path:'/',
+        component:homecomponent
+
+    },
+    {
+        path:'/first',
+        component:firstcomponent
+
+    },
+
+
+
+]
+
+const router=new VueRouter({routes});
+
+new Vue({router}).$mount("#app");
+
+
+
+
+</script>
+
+</body>
+</html>
