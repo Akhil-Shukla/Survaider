@@ -15,6 +15,9 @@
     <script src="https://cdn.jsdelivr.net/npm/vue-resource@1.5.1"></script>
     <script src="https://cdn.jsdelivr.net/npm/apexcharts"></script>
     <script src="https://cdn.jsdelivr.net/npm/vue-apexcharts"></script>
+    <script src="https://unpkg.com/vuejs-paginate@0.9.0"></script>
+   <script src="https://unpkg.com/bootstrap-vue@latest/dist/bootstrap-vue.js"></script>
+
 
 
 </head>
@@ -83,60 +86,122 @@
 <template id="firstroute">
 <div class="container">
     <label for="search">Search over Sex,Relationship or Race</label>
-    <input type="text" id='search'name="search" placeholder="Search..." v-model="search">
-    <div v-if="entrychanged" >
-    <div class="row">
+    <input type="text" id='search'name="search" placeholder="Search..." v-model="search"><br>
 
-                <table class="table table-bordered">
-                    <thead>
-                    <tr>
-                        <th>S.No</th>
-                        <th>Age</th>
-                        <th>Work</th>
-                        <th>fnlwgt</th>
-                        <th>education</th>
-                        <th>education_num</th>
-                        <th>Marital_status</th>
-                        <th>Occupation</th>
-                        <th>Relationship</th>
-                        <th>Race</th>
-                        <th>Sex</th>
-                        <th>Capital_gain</th>
-                        <th>Capital_loss</th>
-                        <th>hoursperweek</th>
-                        <th>Native_Country</th>
-                        <th>Salary</th>
-                    </tr>
-                    </thead>
-                    <tbody style="overflow-y:scroll; height:100px;">
-                    <tr v-for="(list,index) in filter">
-                        <td>
-                            {{++index}}
-                            </td>
-                        <td>{{list.age}}</td>
-                        <td>{{list.work}}</td>
-                        <td>{{list.fnlwgt}}</td>
-                        <td>{{list.education}}</td>
-                        <td>{{list.education_num}}</td>
-                        <td>{{list.marital_status}}</td>
-                        <td>{{list.occupation}}</td>
-                        <td>{{list.relationship}}</td>
-                        <td>{{list.race}}</td>
-                        <td>{{list.sex}}</td>
+    <!--<paginate-->
+        <!--v-model="page"-->
+        <!--:page-count="20"-->
+        <!--:margin-pages="2"-->
+        <!--:page-range="5"-->
+        <!--:container-class="'pagination'"-->
+        <!--:page-class="'page-item'"-->
+        <!--:page-link-class="'page-link-item'"-->
+        <!--:prev-class="'prev-item'"-->
+        <!--:prev-link-class="'prev-link-item'"-->
+        <!--:next-class="'next-item'"-->
+        <!--:next-link-class="'next-link-item'"-->
+        <!--:break-view-class="'break-view'"-->
+        <!--:break-view-link-class="'break-view-link'"-->
+        <!--:first-last-button="true"-->
+      <!--&gt;</paginate>-->
 
-                        <td>{{list.capital_gain}}</td>
-                        <td>{{list.captal_loss}}</td>
-                        <td>{{list.hours_per_week}}</td>
-                    <td>{{list.native_country}}</td>
-                    <td>{{list.salary}}</td>
-                    </tbody>
-                </table>
-                    </tr>
-            </div>
+                                 <b-pagination
+											v-model="currentPage"
+											:total-rows="rows"
+											:per-page="perPage"
+											first-text="⏮"
+											prev-text="⏪"
+											next-text="⏩"
+											last-text="⏭"
+											class="mt-4"
+									></b-pagination>
+
+
+                <b-table
+							bordered stripped
+                         show-empty
+							id="my-table"
+							:items="filter"
+							:per-page="perPage"
+							:current-page="currentPage"
+							small>
+
+					</b-table>
+
+    <!--<div class="row">-->
+
+                <!--<table class="table table-bordered">-->
+                    <!--<thead>-->
+                    <!--<tr>-->
+                        <!--<th>S.No</th>-->
+                        <!--<th>Age</th>-->
+                        <!--<th>Work</th>-->
+                        <!--<th>fnlwgt</th>-->
+                        <!--<th>education</th>-->
+                        <!--<th>education_num</th>-->
+                        <!--<th>Marital_status</th>-->
+                        <!--<th>Occupation</th>-->
+                        <!--<th>Relationship</th>-->
+                        <!--<th>Race</th>-->
+                        <!--<th>Sex</th>-->
+                        <!--<th>Capital_gain</th>-->
+                        <!--<th>Capital_loss</th>-->
+                        <!--<th>hoursperweek</th>-->
+                        <!--<th>Native_Country</th>-->
+                        <!--<th>Salary</th>-->
+                    <!--</tr>-->
+                    <!--</thead>-->
+                    <!--<tbody style="overflow-y:scroll; height:100px;">-->
+                    <!--<tr v-for="(list,index) in allentries">-->
+                        <!--<td>-->
+                            <!--{{index}}-->
+                            <!--</td>-->
+                        <!--<td>{{list.age}}</td>-->
+                        <!--<td>{{list.work}}</td>-->
+                        <!--<td>{{list.fnlwgt}}</td>-->
+                        <!--<td>{{list.education}}</td>-->
+                        <!--<td>{{list.education_num}}</td>-->
+                        <!--<td>{{list.marital_status}}</td>-->
+                        <!--<td>{{list.occupation}}</td>-->
+                        <!--<td>{{list.relationship}}</td>-->
+                        <!--<td>{{list.race}}</td>-->
+                        <!--<td>{{list.sex}}</td>-->
+
+                        <!--<td>{{list.capital_gain}}</td>-->
+                        <!--<td>{{list.captal_loss}}</td>-->
+                        <!--<td>{{list.hours_per_week}}</td>-->
+                        <!--<td>{{list.native_country}}</td>-->
+                        <!--<td>{{list.salary}}</td>-->
+                    <!--</tbody>-->
+                <!--</table>-->
+        <!--</tr>-->
     </div>
+
 
 </div>
 </template>
+<template id="paginate">
+		<div class="overflow-auto">
+    <!-- Use text in props -->
+
+
+     Use emojis in props
+    <b-pagination
+      v-model="currentPage"
+      :total-rows="rows"
+      :per-page="perPage"
+      first-text="⏮"
+      prev-text="⏪"
+      next-text="⏩"
+      last-text="⏭"
+      class="mt-4"
+      pageCount=2
+    ></b-pagination>
+
+	{{currentPage}}
+  </div>
+	</template>
+
 
 {%endverbatim%}
 
@@ -155,38 +220,71 @@ var conf={
 
 
 
+
 }
+<!--Vue.component("paginate",{-->
+    <!--template:"#paginate",-->
+    <!--components:{-->
+        <!--b-pagination : BPagination,-->
+
+    <!--},-->
+    <!--data:function(){-->
+        <!--return{-->
+            <!--rows: 100,-->
+            <!--perPage: 10,-->
+            <!--currentPage: 1-->
+        <!--}-->
+    <!--},-->
+    <!--&lt;!&ndash;computed:{&ndash;&gt;-->
+        <!--&lt;!&ndash;rows:function(){&ndash;&gt;-->
+            <!--&lt;!&ndash;return conf.catcher_results.length;&ndash;&gt;-->
+        <!--&lt;!&ndash;}&ndash;&gt;-->
+
+    <!--&lt;!&ndash;}&ndash;&gt;-->
+<!--});-->
+
 firstcomponent=Vue.extend({
     template:"#firstroute",
+    components:{
+        pagination: VuejsPaginate,
+
+
+    },
     data(){
         return{
-        allentries:[],
+        allentries:conf.allentries,
         entrychanged:false,
         search:"",
+        page:0,
+        rows: 32000,
+        perPage: 10,
+        currentPage: 1,
+        items:conf.allentries
         }
     },
     watch:{
         allentries:function(){
             console.log("allentrieshas changed");
-            this.entrychanged=true;
-            console.log(this.entrychanged);
-
+           this.entrychanged=true;
+            console.log(this.entrychanged)
             }
 
     },
 
-    beforeCreate(){
-        this.$http.get('http://127.0.0.1:8000/app/alldata/')
-        .then((response)=>{
-            console.log(response.data);
-            this.allentries=response.data
-            console.log(this.allentries)
-        });
+    <!--beforeCreate(){-->
+        <!--this.$http.get('http://127.0.0.1:8000/app/alldata/')-->
+        <!--.then((response)=>{-->
+            <!--console.log(response.data);-->
+            <!--this.allentries=response.data-->
+            <!--conf.allentries=response.data-->
+            <!--console.log(this.allentries)-->
+            <!--console.log(conf.allentries)-->
+        <!--});-->
 
-    },
+    <!--},-->
     computed: {
       filter:function(){
-        return this.allentries.filter((item) =>{
+        return conf.allentries.filter((item) =>{
           if(item.sex.match(this.search)){
             return true;
           }
@@ -198,7 +296,8 @@ firstcomponent=Vue.extend({
           }
 
         })
-      }
+      },
+
 
     }
 
@@ -282,6 +381,16 @@ homecomponent=Vue.extend({
          this.pie2.series=[conf.not_in_family,conf.husband,conf.wife,conf.own_child,conf.unmarried]
         });
 
+        if(conf.allentries.length==0){
+            this.$http.get('http://127.0.0.1:8000/app/alldata/')
+            .then((response)=>{
+
+                conf.allentries=response.data
+
+                console.log(conf.allentries)
+
+            });
+        }
 
 
 
@@ -314,5 +423,6 @@ new Vue({router}).$mount("#app");
 
 
 </script>
+<script src="https://cdn.jsdelivr.net/npm/bootstrap-vue@2.0.0-rc.27/dist/bootstrap-vue.common.min.js" ></script>
 </body>
 </html>
